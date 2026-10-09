@@ -15,6 +15,8 @@ interface ImportMetaEnv {
   readonly VITE_API_URL?: string;
   /** Cloudflare Turnstile Site Key */
   readonly VITE_TURNSTILE_SITE_KEY?: string;
+  /** 为 true/1/yes 时不加载 Turnstile */
+  readonly VITE_DISABLE_CLOUDFLARE_TURNSTILE?: string;
   /** 构建类型 */
   readonly VITE_BUILD_TYPE?: string;
   /** 启用一起听功能 */
