@@ -76,9 +76,12 @@ export default async function handler(req: any, res: any): Promise<void> {
     return;
   }
 
-  // Turnstile 验证（若配置了密钥）
+  // DISABLE_CLOUDFLARE_TURNSTILE=true 时跳过校验，直接签发
+  const turnstileDisabled = ["1", "true", "yes"].includes(
+    (process.env.DISABLE_CLOUDFLARE_TURNSTILE ?? "").trim().toLowerCase(),
+  );
   const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
-  if (turnstileSecret) {
+  if (!turnstileDisabled && turnstileSecret) {
     const parsedUrl = parseUrl(req.url || "", true);
     const turnstileToken = parsedUrl.query.turnstile as string | undefined;
     if (!turnstileToken) {

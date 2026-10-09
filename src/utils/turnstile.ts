@@ -25,6 +25,9 @@ interface TurnstileOptions {
 }
 
 const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
+const TURNSTILE_DISABLED = ["1", "true", "yes"].includes(
+  (import.meta.env.VITE_DISABLE_CLOUDFLARE_TURNSTILE ?? "").trim().toLowerCase(),
+);
 const CONTAINER_ID = "turnstile-invisible";
 // Turnstile token 有效期 5 分钟，提前 1 分钟刷新
 const TOKEN_TTL = 4 * 60 * 1000;
@@ -102,8 +105,8 @@ const initWidget = async (): Promise<void> => {
 
 // 获取 Turnstile token（Web 端专用）
 export const getTurnstileToken = async (): Promise<string> => {
-  // Electron 环境不需要 Turnstile
-  if (isElectron) return "";
+  // Electron 或显式关闭时不加载 Turnstile
+  if (isElectron || TURNSTILE_DISABLED) return "";
 
   // 未配置 site key 时跳过
   if (!SITE_KEY) {
