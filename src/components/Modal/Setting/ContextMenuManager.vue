@@ -35,6 +35,7 @@ type Item = { label: string; key: ContextMenuOptionKey };
 const items: Item[] = [
   { label: "播放", key: "play" },
   { label: "下一首播放", key: "playNext" },
+  { label: "添加到播放列表末尾", key: "addToPlayListEnd" },
   { label: "添加到歌单", key: "addToPlaylist" },
   { label: "查看 MV", key: "mv" },
   { label: "不感兴趣", key: "dislike" },

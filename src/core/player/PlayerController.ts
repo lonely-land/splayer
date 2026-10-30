@@ -1298,6 +1298,54 @@ class PlayerController {
   }
 
   /**
+   * 添加到播放列表末尾
+   * 已在列表中时移动到末尾，并修正当前播放索引
+   */
+  public async addSongToPlayListEnd(song: SongType) {
+    const dataStore = useDataStore();
+    const statusStore = useStatusStore();
+    if (!song) return;
+
+    const list = [...dataStore.playList];
+    const sameIndexes = list.reduce<number[]>((acc, item, index) => {
+      if (item.id === song.id) acc.push(index);
+      return acc;
+    }, []);
+    const onlyAtEnd = sameIndexes.length === 1 && sameIndexes[0] === list.length - 1;
+    if (onlyAtEnd) {
+      window.$message.info("已在播放列表末尾");
+      return;
+    }
+
+    const currentSong = list[statusStore.playIndex];
+    const nextList = list.filter((item) => item.id !== song.id);
+    nextList.push(song);
+    let newPlayIndex = statusStore.playIndex;
+    if (currentSong && currentSong.id === song.id) {
+      newPlayIndex = nextList.length - 1;
+    } else if (currentSong) {
+      const currentIndex = nextList.indexOf(currentSong);
+      if (currentIndex !== -1) newPlayIndex = currentIndex;
+    }
+    await dataStore.setPlayList(nextList);
+    if (newPlayIndex !== statusStore.playIndex) statusStore.playIndex = newPlayIndex;
+
+    // 随机或心动模式下同步原始列表，关闭后仍保留
+    if (statusStore.shuffleMode === "on" || statusStore.shuffleMode === "heartbeat") {
+      const original = await dataStore.getOriginalPlayList();
+      if (original && original.length > 0) {
+        const nextOriginal = original.filter((item) => item.id !== song.id);
+        nextOriginal.push(song);
+        await dataStore.setOriginalPlayList(nextOriginal);
+      }
+    }
+
+    window.$message.success(
+      sameIndexes.length > 0 ? "已移动到播放列表末尾" : "已添加到播放列表末尾",
+    );
+  }
+
+  /**
    * 切换播放索引
    * @param index 播放索引
    * @param play 是否立即播放

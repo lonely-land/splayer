@@ -202,6 +202,15 @@ export const useSongMenu = () => {
         icon: renderIcon("PlayNext", { size: 18 }),
       },
       {
+        key: "play-list-end",
+        label: "添加到播放列表末尾",
+        show: settingStore.contextMenuOptions.addToPlayListEnd,
+        props: {
+          onClick: () => player.addSongToPlayListEnd(song),
+        },
+        icon: renderIcon("PlaylistAdd", { size: 18 }),
+      },
+      {
         key: "playlist-add",
         label: "添加到歌单",
         show:
@@ -240,6 +249,7 @@ export const useSongMenu = () => {
         show:
           settingStore.contextMenuOptions.play ||
           settingStore.contextMenuOptions.playNext ||
+          settingStore.contextMenuOptions.addToPlayListEnd ||
           settingStore.contextMenuOptions.addToPlaylist ||
           settingStore.contextMenuOptions.mv,
       },
@@ -292,7 +302,7 @@ export const useSongMenu = () => {
             props: {
               onClick: () =>
                 copyData(
-                  getShareUrl(type, type === "pigeon" ? song.originalId ?? "" : song.id),
+                  getShareUrl(type, type === "pigeon" ? (song.originalId ?? "") : song.id),
                   "已复制分享链接到剪贴板",
                 ),
             },

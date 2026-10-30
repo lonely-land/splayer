@@ -390,6 +390,7 @@ export interface SettingState {
   contextMenuOptions: {
     play: boolean;
     playNext: boolean;
+    addToPlayListEnd: boolean;
     addToPlaylist: boolean;
     mv: boolean;
     dislike: boolean;
@@ -688,6 +689,7 @@ export const useSettingStore = defineStore("setting", {
     contextMenuOptions: {
       play: true,
       playNext: true,
+      addToPlayListEnd: true,
       addToPlaylist: true,
       mv: true,
       dislike: true,
